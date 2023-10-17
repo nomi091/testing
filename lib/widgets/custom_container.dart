@@ -24,7 +24,7 @@ Widget buildCustomParametrizedNonNulAble(color, text) {
   );
 }
 
-Widget buildCustomParametrizedNullAble({color, text}) {
+Widget buildCustomParametrizedNullAble({color,String? text}) {
   return Container(
     color: color ?? Colors.black,
     height: 100,
