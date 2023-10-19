@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../view/home_screen.dart';
+import '../view/home_screen/home_screen.dart';
 
 class ScreenRoutes {
   static const String home = "home";
