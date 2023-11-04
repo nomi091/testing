@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:testing/view/home_screen/check_screen.dart';
+import 'package:testing/view/sql_front_end_view/sql_front_end_view.dart';
 
 
 Future<void> main() async {
@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return   const MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: MyContactList(),
+        home: InsertDoctor(),
     );
   }
 }
