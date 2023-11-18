@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:testing/model/doctor_model.dart';
 
-import '../../model/auth_model.dart';
 import '../../services/db_helper.dart';
 
 class InsertDoctor extends StatefulWidget {
@@ -77,38 +75,11 @@ class _InsertDoctorState extends State<InsertDoctor> {
               ),
               ElevatedButton(
                   onPressed: () async {
-                    // AuthModel auth=AuthModel
-                    // (name: "Noman",
-                    // password: ""
-                    // )  ;
-
-                    Doctor doc = Doctor(
-                        name: namecont.text,
-                        exp: int.parse(expcont.text),
-                        age: int.parse(agecont.text),
-                        spec: speccont.text);
-                    await SportsSQLHelper.createItem(
-                        name: doc.name,
-                        exp: doc.exp,
-                        age: doc.age,
-                        spec: doc.spec);
-                    //  int rowid=await  DBHandler.instance.insertDoctor(doc);
-                    // if(rowid>0){
-                    //   showDialog(context: context,
-                    //   builder: (context){
-                    //     return const AlertDialog(
-                    //       title: Text('Data inserted'),
-                    //     );
-                    //   });
-                    // }
-                    // else{
-                    //    showDialog(context: context,
-                    //   builder: (context){
-                    //     return const AlertDialog(
-                    //       title: Text('Failued'),
-                    //     );
-                    //   });
-                    // }
+                    await DoctorSQLHelper.insetData(
+                        docName: namecont.text,
+                        docExp: int.parse(expcont.text),
+                        docAge: int.parse(agecont.text),
+                        docSpec: speccont.text);
                   },
                   child: const Text('Submit'))
             ],
