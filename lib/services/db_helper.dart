@@ -1,80 +1,75 @@
-import 'package:flutter/cupertino.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';
 
-class DoctorSQLHelper {
-  static Future<void> createTables(Database database) async {
-    await database.execute("""
-      CREATE TABLE selectedSports(
-        id TEXT PRIMARY KEY,
-        name TEXT,
-        exp TEXT,
-        age TEXT,
-        spec TEXT,
-        updated_at  DEFAULT CURRENT_TIMESTAMP,
-        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-      )
-      """);
+class StudentSqlHelper {
+  static Database? _database;
+
+  // Initialize and get the database
+  static Future<Database> get database async {
+    if (_database != null) return _database!;
+
+    _database = await _initDB();
+    return _database!;
   }
-// id: the id of a item
-// title, description: name and description of your activity
-// created_at: the time that the item was created. It will be automatically handled by SQLite
 
-  static Future<Database> db() async {
-    return openDatabase(
-      'doctor.db',
+  // Create and open the database
+  static Future<Database> _initDB() async {
+    String path = join(await getDatabasesPath(), 'student_database.db');
+    return await openDatabase(
+      path,
       version: 1,
-      onCreate: (Database database, int version) async {
-        await createTables(database);
+      onCreate: (db, version) async {
+        await createTables(db);
       },
     );
   }
 
-  // Create new item (journal)
-  static Future<int> insetData(
-      {String? docName, int? docExp, int? docAge, String? docSpec}) async {
-    final db = await DoctorSQLHelper.db();
-    final data = {
-      'id': "1",
-      'name': docName,
-      'exp': docExp,
-      "age": docAge,
-      "spec": docSpec,
-    };
-    final id = await db.insert('selectedSports', data,
-        conflictAlgorithm: ConflictAlgorithm.replace);
-    return id;
+  // Create tables
+  static Future<void> createTables(Database database) async {
+    await database.execute("""
+      CREATE TABLE student(
+        name TEXT,
+        semester TEXT,
+        ProName TEXT
+      )""");
   }
 
-  // // Read all items (journals)
-  static Future<List<Map<String, dynamic>>> getItems() async {
-    final db = await DoctorSQLHelper.db();
-    return db.query('doctor');
+  // Insert student
+  static Future<void> insertStudent(
+      String name, String semester, String proName) async {
+    final db = await database;
+    await db.insert(
+      'student',
+      {'name': name, 'semester': semester, 'ProName': proName},
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
   }
 
-  // // Update an item by id
-  static Future<int> updateDoctor(
-      {String? docName, int? docExp, int? docAge, String? docSpec}) async {
-    final db = await DoctorSQLHelper.db();
-    final data = {
-      'exp': docExp,
-      // "age": docAge,
-      // "spec": docSpec,
-      // 'updated_at': DateTime.now().toString(),
-      // 'createdAt': DateTime.now().toString()
-    };
-    final result = await db
-        .update('doctor', data, where: "name = ?", whereArgs: ['$docName']);
-    return result;
+  // Get all students
+  static Future<List<Map<String, dynamic>>> getStudents() async {
+    final db = await database;
+    return await db.query('student');
   }
 
-  // // Delete
-  static Future<void> deleteItem({String? docName}) async {
-    final db = await DoctorSQLHelper.db();
-    try {
-      // await db.delete("doctor");
-      await db.delete("doctor", where: "name = ?", whereArgs: [docName]);
-    } catch (err) {
-      debugPrint("Something went wrong when deleting an item: $err");
-    }
+  // Update student
+  static Future<void> updateStudent(String newName, String newSemester,
+      String newProName, String oldName) async {
+    final db = await database;
+    await db.update(
+      'student',
+      {'name': newName, 'semester': newSemester, 'ProName': newProName},
+      where: 'name = ?',
+      whereArgs: [oldName],
+    );
+  }
+
+  // Delete student
+  static Future<void> deleteStudent(String name) async {
+    final db = await database;
+    await db.delete(
+      'student',
+      where: 'name = ?',
+      whereArgs: [name],
+    );
   }
 }
